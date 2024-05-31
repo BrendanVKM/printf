@@ -10,6 +10,8 @@ PRE		= srcs/
 
 OBJS	= ${SRCS:.c=.o}
 
+DEPS	= ${SRCS:.c=.d}
+
 INCLUDES = incs
 
 NAME	= libftprintf.a
@@ -22,7 +24,7 @@ AR		= ar rc
 
 RM		= rm -f
 
-CFLAGS	= -Wall -Wextra -Werror -I
+CFLAGS	= -Wall -Wextra -Werror -MMD -I
 
 all:		${NAME}
 
@@ -36,12 +38,12 @@ ${NAME}:	$(OBJS)
 			@echo "libftprintf created !"
 
 clean:	
-			@${RM} ${OBJS}
+			@${RM} ${OBJS} 
 			@make clean -C $(LIBFT)
 			@echo "printf objects cleaned !"
 
 fclean: 	clean
-			@${RM} ${NAME}
+			@${RM} ${NAME} ${DEPS}
 			@make fclean -C $(LIBFT)
 			@echo "printf lib cleaned !"
 
@@ -49,3 +51,5 @@ re:			fclean all
 			@echo "printf lib reloaded !"
 
 .PHONY: 	all clean fclean re
+
+-include ${DEPS}
