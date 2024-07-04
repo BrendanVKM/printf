@@ -1,51 +1,50 @@
+NAME	= libftprintf.a
+
+SRC_PATH = srcs/
+OBJ_PATH = obj/
+
 SRC		= ft_printf.c \
 			ft_diu.c \
 			ft_ifcspc.c \
 			ft_ifpxX.c \
 			ft_printf_utils.c
+SRCS	= ${addprefix $(SRC_PATH), $(SRC)}
 
-SRCS	= ${addprefix ${PRE}, ${SRC}}
-
-PRE		= srcs/
-
-OBJS	= ${SRCS:.c=.o}
-
-DEPS	= ${SRCS:.c=.d}
-
-INCLUDES = incs
-
-NAME	= libftprintf.a
+OBJ		= $(SRC:.c=.o)
+OBJS	= ${addprefix $(OBJ_PATH), $(OBJ)}
 
 LIBFT 	= libft
-
-CC		= cc
-
+LIBFTLIB = libft.a
 AR		= ar rc
 
-RM		= rm -f
+CC		= cc
+CFLAGS	= -Wall -Wextra -Werror
+INCLUDES = -I incs
 
-CFLAGS	= -Wall -Wextra -Werror -MMD -I
+RM		= rm -rfd
 
-all:		${NAME}
+all:		$(OBJ_PATH) $(NAME)
 
-.c.o:
-			@$(CC) $(CFLAGS) $(INCLUDES) -c  $< -o ${<:.c=.o}
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+			@$(CC) $(CFLAGS) $(INCLUDES) -c  $< -o $@
 
-${NAME}:	$(OBJS)
+$(OBJ_PATH):
+			@mkdir $(OBJ_PATH)
+
+$(NAME):	$(OBJS)
 			@make -C $(LIBFT)
-			@mv $(LIBFT)/libft.a $(NAME)
-			@${AR} $(NAME) $(OBJS) 
+			@mv $(LIBFT)/$(LIBFTLIB) $(NAME)
+			@${AR} $(NAME) $(OBJS)
+			@make clean
 			@echo "libftprintf created !"
 
 clean:	
-			@${RM} ${OBJS} 
-			@make clean -C $(LIBFT)
+			@$(RM) $(OBJ_PATH) 
 			@echo "printf objects cleaned !"
 
 fclean: 	clean
-			@${RM} ${NAME} ${DEPS}
-			@make fclean -C $(LIBFT)
-			@echo "printf lib cleaned !"
+			@$(RM) $(NAME)
+			@echo "printf cleaned !"
 
 re:			fclean all
 			@echo "printf lib reloaded !"
